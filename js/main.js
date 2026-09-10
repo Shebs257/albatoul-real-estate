@@ -100,6 +100,8 @@
       var open = nav.classList.toggle('open');
       navToggle.classList.toggle('is-open', open);
       document.body.classList.toggle('no-scroll', open);
+      // The header must be on screen (and untransformed) while the drawer is out.
+      if (open) header.classList.remove('nav-up');
     });
   }
   var navClose = $('#navClose');
@@ -116,10 +118,30 @@
   var toTop = $('#toTop');
   var sections = $$('section[id]');
 
+  // Smart header: hide it on the way down, bring it straight back on the way up.
+  var lastY = window.pageYOffset;
+  var HIDE_AFTER = 220;   // don't start hiding until past the hero top
+  var DELTA = 6;          // ignore jitter / rubber-banding
+
+  function headerOnScroll(y) {
+    if (!header) return;
+    var diff = y - lastY;
+    if (Math.abs(diff) < DELTA) return;
+
+    // Never hide it while the mobile drawer is open.
+    if (diff > 0 && y > HIDE_AFTER && !(nav && nav.classList.contains('open'))) {
+      header.classList.add('nav-up');
+    } else if (diff < 0) {
+      header.classList.remove('nav-up');
+    }
+    lastY = y;
+  }
+
   function onScroll() {
     var y = window.pageYOffset;
     if (header) header.classList.toggle('scrolled', y > 30);
     if (toTop) toTop.classList.toggle('show', y > 600);
+    headerOnScroll(y);
 
     var current = '';
     sections.forEach(function (sec) {

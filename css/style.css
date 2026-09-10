@@ -49,17 +49,17 @@
 
 /* ---------- Reset ---------- */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-/* overflow-x on <html> too: the off-canvas mobile drawer is position:fixed,
-   which body's overflow alone does not clip — without this the page can be
-   scrolled sideways on phones. */
-html{scroll-behavior:smooth;scroll-padding-top:var(--header-h);overflow-x:hidden;max-width:100%}
+html{scroll-behavior:smooth;scroll-padding-top:var(--header-h)}
 body{
   font-family:'Cairo',system-ui,-apple-system,'Segoe UI',sans-serif;
   background:var(--cream);
   color:var(--ink);
   line-height:1.8;
   font-size:16px;
-  overflow-x:hidden;
+  /* clip, not hidden: `hidden` forces overflow-y to compute as `auto`, which
+     makes body a scroll container and stops position:sticky working on the
+     header. `clip` contains stray horizontal overflow without that side effect. */
+  overflow-x:clip;
   -webkit-font-smoothing:antialiased;
 }
 html[lang="en"] body{font-family:'Jost',system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.75}
@@ -165,9 +165,13 @@ html[lang="ar"] .eyebrow{letter-spacing:0}
   background:rgba(255,255,255,.96);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--line);
-  transition:box-shadow .3s,padding .3s;
+  transition:transform .4s var(--ease),box-shadow .3s;
 }
 .header.scrolled{box-shadow:0 10px 34px rgba(11,33,73,.10)}
+/* Slides out of the way on scroll down, back on scroll up. Deliberately no
+   `transform` in the base rule: a non-none transform would make .header a
+   containing block for the position:fixed nav drawer inside it. */
+.header.nav-up{transform:translateY(-100%)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:var(--header-h)}
 .logo img{height:64px;width:auto;transition:height .3s var(--ease)}
 .header.scrolled .logo img{height:52px}
