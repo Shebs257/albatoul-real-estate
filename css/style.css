@@ -169,8 +169,8 @@ html[lang="ar"] .eyebrow{letter-spacing:0}
 }
 .header.scrolled{box-shadow:0 10px 34px rgba(11,33,73,.10)}
 .header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:var(--header-h)}
-.logo img{height:58px;width:auto;transition:height .3s var(--ease)}
-.header.scrolled .logo img{height:48px}
+.logo img{height:64px;width:auto;transition:height .3s var(--ease)}
+.header.scrolled .logo img{height:52px}
 
 .nav-shell{display:contents}
 .nav{display:flex;align-items:center;gap:26px}
@@ -676,8 +676,18 @@ body.no-scroll{overflow:hidden}
 }
 
 @media (max-width:960px){
-  :root{--header-h:74px}
+  :root{--header-h:88px}
   .nav-toggle{display:flex}
+  /* A non-none backdrop-filter makes .header a containing block for
+     position:fixed descendants, which would trap the drawer inside the
+     header strip. The background is 96% opaque anyway, so drop the blur
+     here (desktop keeps it — it has no fixed descendants). */
+  .header{backdrop-filter:none;-webkit-backdrop-filter:none}
+  /* Logo centred, hamburger pinned to the inline edge. */
+  .header-inner{position:relative;justify-content:center}
+  .logo img{height:70px}
+  .header.scrolled .logo img{height:58px}
+  .nav-toggle{position:absolute;inset-inline-end:20px;top:50%;transform:translateY(-50%)}
   /* Clips the drawer to the viewport; transparent and click-through itself. */
   .nav-shell{
     display:block;position:fixed;inset:0;z-index:90;
@@ -693,7 +703,10 @@ body.no-scroll{overflow:hidden}
     overflow-y:auto;
   }
   html[dir="rtl"] .nav{transform:translateX(-100%);box-shadow:20px 0 60px rgba(11,33,73,.2)}
-  .nav.open{transform:translateX(0)}
+  /* Must stay dir-qualified: a bare `.nav.open` loses the cascade to the
+     `html[dir=...] .nav` closed state above and the drawer never slides in. */
+  html[dir="ltr"] .nav.open,
+  html[dir="rtl"] .nav.open{transform:translateX(0)}
   .nav ul{flex-direction:column;align-items:stretch;gap:2px}
   .nav-link{padding:.85rem .6rem;font-size:1.02rem;border-bottom:1px solid var(--line)}
   .nav-link::after{display:none}
@@ -731,8 +744,8 @@ body.no-scroll{overflow:hidden}
 
 @media (max-width:520px){
   body{font-size:15px}
-  .logo img{height:46px}
-  .header.scrolled .logo img{height:42px}
+  .logo img{height:62px}
+  .header.scrolled .logo img{height:52px}
   .projects-grid{grid-template-columns:1fr}
   .hero-actions{flex-direction:column;align-items:stretch}
   .hero-actions .btn{width:100%}
