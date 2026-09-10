@@ -708,7 +708,13 @@ body.no-scroll{overflow:hidden}
   html[dir="ltr"] .nav.open,
   html[dir="rtl"] .nav.open{transform:translateX(0)}
   .nav ul{flex-direction:column;align-items:stretch;gap:2px}
-  .nav-link{padding:.85rem .6rem;font-size:1.02rem;border-bottom:1px solid var(--line)}
+  /* border-radius:0 matters: the inherited 8px radius curves the bottom
+     border into a smile instead of a straight divider. */
+  .nav-link{
+    display:block;padding:.95rem .6rem;font-size:1.05rem;
+    border-radius:0;border-bottom:1px solid var(--line);
+  }
+  .nav li:last-child .nav-link{border-bottom:0}
   .nav-link::after{display:none}
   .nav-cta{margin-top:22px}
   .nav-close{
